@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-api
+  namespace: demo
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: demo-api
+
+  template:
+    metadata:
+      labels:
+        app: demo-api
+
+    spec:
+      containers:
+        - name: demo-api
+          image: ghcr.io/alexandrade-git/demo-api:latest
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8000
+
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
