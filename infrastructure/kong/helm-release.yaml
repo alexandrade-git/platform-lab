@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong
+  namespace: argocd
+spec:
+  project: platform
+
+  source:
+    repoURL: https://charts.konghq.com
+    chart: kong
+    targetRevision: "2.52.0"
+
+    helm:
+      values: |
+        ingressController:
+          enabled: true
+
+        admin:
+          enabled: true
+
+        proxy:
+          type: NodePort
+
+        env:
+          database: "off"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
