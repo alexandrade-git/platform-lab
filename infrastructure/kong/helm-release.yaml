@@ -3,14 +3,9 @@ kind: Application
 metadata:
   name: kong
   namespace: argocd
-  annotations:
-    argocd.argoproj.io/tracking-id: kong
+
 spec:
   project: platform
-
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kong
 
   source:
     chart: kong
@@ -21,10 +16,8 @@ spec:
       values: |
         ingressController:
           enabled: true
-
-        controller:
-          args:
-            - --feature-gates=GatewayAlpha=true
+          env:
+            CONTROLLER_FEATURE_GATES: "GatewayAlpha=true"
 
         admin:
           enabled: true
@@ -35,10 +28,13 @@ spec:
         env:
           database: "off"
 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong
+
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-
     syncOptions:
       - CreateNamespace=true
