@@ -3,18 +3,28 @@ kind: Application
 metadata:
   name: kong
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/tracking-id: kong
 spec:
   project: platform
 
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong
+
   source:
-    repoURL: https://charts.konghq.com
     chart: kong
-    targetRevision: "2.52.0"
+    repoURL: https://charts.konghq.com
+    targetRevision: 2.52.0
 
     helm:
       values: |
         ingressController:
           enabled: true
+
+        controller:
+          args:
+            - --feature-gates=GatewayAlpha=true
 
         admin:
           enabled: true
@@ -24,10 +34,6 @@ spec:
 
         env:
           database: "off"
-
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: kong
 
   syncPolicy:
     automated:
