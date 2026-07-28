@@ -1,5 +1,6 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
+
 metadata:
   name: kong
   namespace: argocd
@@ -17,7 +18,7 @@ spec:
         ingressController:
           enabled: true
           env:
-            CONTROLLER_FEATURE_GATES: "GatewayAlpha=true"
+            FEATURE_GATES: "GatewayAlpha=true"
 
         admin:
           enabled: true
@@ -36,5 +37,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
+
     syncOptions:
       - CreateNamespace=true
