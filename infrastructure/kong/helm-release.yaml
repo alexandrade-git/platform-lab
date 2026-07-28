@@ -9,16 +9,18 @@ spec:
   project: platform
 
   source:
-    chart: kong
     repoURL: https://charts.konghq.com
+    chart: kong
     targetRevision: 2.52.0
 
     helm:
       values: |
         ingressController:
           enabled: true
-          env:
-            FEATURE_GATES: "GatewayAlpha=true"
+
+          image:
+            repository: kong/kubernetes-ingress-controller
+            tag: "3.5.11"
 
         admin:
           enabled: true
